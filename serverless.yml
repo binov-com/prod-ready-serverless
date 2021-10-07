@@ -1,0 +1,23 @@
+service: slsProjectName
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  profile: bessam
+  stage: dev
+  region: us-east-2
+  endpointType: REGIONAL
+
+  environment:
+
+  lambdaHashingVersion: 20201221
+
+plugins:
+  - serverless-iam-roles-per-function
+
+custom:
+
+functions:
+
+resources:
+  Resources:
