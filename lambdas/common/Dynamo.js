@@ -8,6 +8,14 @@ if (process.env.IS_OFFLINE) {
   };
 }
 
+if (process.env.JEST_WORKER_ID) {
+  options = {
+    endpoint: "http://localhost:8000",
+    region: "local-env",
+    sslEnabled: false,
+  };
+}
+
 AWS.config.apiVersions = {
   dynamodb: "2012-08-10",
   // other service API versions

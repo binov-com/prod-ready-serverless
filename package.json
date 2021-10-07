@@ -5,6 +5,7 @@
     "webpack": "^5.57.1"
   },
   "devDependencies": {
+    "@shelf/jest-dynamodb": "^2.1.0",
     "jest": "^27.2.4",
     "serverless-dynamodb-local": "^0.2.40",
     "serverless-iam-roles-per-function": "^3.2.0",
