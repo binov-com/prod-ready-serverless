@@ -5,7 +5,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   profile: bessam
-  stage: dev
+  # stage: int
   region: us-east-2
   endpointType: REGIONAL
 

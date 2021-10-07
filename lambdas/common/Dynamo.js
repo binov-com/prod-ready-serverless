@@ -1,11 +1,19 @@
 const AWS = require("aws-sdk");
 
+let options = {};
+if (process.env.IS_OFFLINE) {
+  options = {
+    region: "localhost",
+    endpoint: "http://localhost:8000",
+  };
+}
+
 AWS.config.apiVersions = {
   dynamodb: "2012-08-10",
   // other service API versions
 };
 
-const documentClient = new AWS.DynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient(options);
 
 const Dynamo = {
   async get(ID, TableName) {
