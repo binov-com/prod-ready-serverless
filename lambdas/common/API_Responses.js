@@ -1,25 +1,23 @@
 const Responses = {
-  _200(data = {}) {
+  _defineResponse(statusCode = 502, data = {}) {
     return {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Methods": "*",
         "Access-Control-Allow-Origin": "*",
       },
-      statusCode: 200,
+      statusCode: statusCode,
       body: JSON.stringify(data),
     };
   },
+  _200(data = {}) {
+    return this._defineResponse(200, data);
+  },
   _400(data = {}) {
-    return {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Methods": "*",
-        "Access-Control-Allow-Origin": "*",
-      },
-      statusCode: 400,
-      body: JSON.stringify(data),
-    };
+    return this._defineResponse(400, data);
+  },
+  _404(data = {}) {
+    return this._defineResponse(404, data);
   },
 };
 
