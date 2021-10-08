@@ -10,26 +10,23 @@ describe("Unit test of API_Responses", () => {
     expect(typeof Dynamo.write).toBe("function");
   });
 
-  const validTableName = "customers";
+  const { customersTable } = process.env;
   const data = { ID: "1", lastname: "BY", firstname: "Bessam" };
 
   test("dynamo write works", async () => {
-    // expect.assertions(2);
-
     try {
-      const response = await Dynamo.write(data, validTableName);
+      const response = await Dynamo.write(data, customersTable);
       expect(response).toBe(data);
       expect(typeof response).toBe("object");
+      await Dynamo.delete(data.ID, customersTable);
     } catch (error) {
       console.log("error in dynamo write test", error);
     }
   });
 
   test("dynamo get works", async () => {
-    // expect.assertions(2);
-
     try {
-      const response = await Dynamo.get(data.ID, validTableName);
+      const response = await Dynamo.get(data.ID, customersTable);
       expect(response).toEqual(data);
       expect(typeof response).toBe("object");
     } catch (error) {

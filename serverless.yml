@@ -19,6 +19,8 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-webpack
   - serverless-s3-sync
+  - serverless-plugin-scripts
+  - serverless-offline
 
 package:
   individually: true
@@ -27,10 +29,25 @@ custom:
   customersTable: customers
   bucketName: com.binov.prod-ready
 
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+    migration:
+      dir: offline/migrations
+
+  scripts:
+    hooks:
+      # cloudformation template is valid
+      "aws:common:validate:validate": yarn jest
+
 functions:
   getCustomer:
     handler: lambdas/endpoints/getCustomer.handler
-    iamRoleStatementsName: get-customer-role
+    iamRoleStatementsName: get-customer-roles
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -38,12 +55,12 @@ functions:
         Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.customersTable}"
     events:
       - http:
-          path: get-customer/{ID}
+          path: customer/{ID}
           method: GET
           cors: true
   createCustomer:
     handler: lambdas/endpoints/createCustomer.handler
-    iamRoleStatementsName: create-customer-role
+    iamRoleStatementsName: create-customer-roles
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -51,38 +68,38 @@ functions:
         Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.customersTable}"
     events:
       - http:
-          path: create-customer/{ID}
+          path: customer/{ID}
           method: POST
           cors: true
   createFile:
     handler: lambdas/endpoints/createFile.handler
-    iamRoleStatementsName: create-file-role
+    iamRoleStatementsName: create-file-roles
     iamRoleStatements:
       - Effect: "Allow"
         Action:
           - s3:PutObject
-        Resource: "arn:aws:s3:::${self:custom.bucketFiles}/*"
+        Resource: "arn:aws:s3:::${self:custom.bucketName}/*"
     events:
       - http:
-          path: create-file/{fileName}
+          path: file/{fileName}
           method: POST
           cors: true
   getFile:
     handler: lambdas/endpoints/getFile.handler
-    iamRoleStatementsName: get-file-role
+    iamRoleStatementsName: get-file-roles
     iamRoleStatements:
       - Effect: "Allow"
         Action:
           - s3:GetObject
-        Resource: "arn:aws:s3:::${self:custom.bucketFiles}/*"
+        Resource: "arn:aws:s3:::${self:custom.bucketName}/*"
     events:
       - http:
-          path: get-file/{fileName}
+          path: file/{fileName}
           method: GET
           cors: true
   sendEmail:
     handler: lambdas/endpoints/sendEmail.handler
-    iamRoleStatementsName: send-email-role
+    iamRoleStatementsName: send-email-roles
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -93,7 +110,7 @@ functions:
             ses:FromAddress: "bessam@binov.com"
     events:
       - http:
-          path: send-email
+          path: sendemail
           method: POST
           cors: true
 
@@ -102,7 +119,7 @@ resources:
     bucketUpload:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:custom.bucketFName}
+        BucketName: ${self:custom.bucketName}
     dynamoDbTable:
       Type: AWS::DynamoDB::Table
       Properties:

@@ -9,6 +9,7 @@
     "jest": "^27.2.4",
     "serverless-dynamodb-local": "^0.2.40",
     "serverless-iam-roles-per-function": "^3.2.0",
-    "serverless-offline": "^8.2.0"
+    "serverless-offline": "^8.2.0",
+    "serverless-plugin-scripts": "^1.0.2"
   }
 }

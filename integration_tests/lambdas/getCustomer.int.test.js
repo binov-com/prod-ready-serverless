@@ -55,5 +55,7 @@ describe("get customer integration tests", () => {
 
     expect(res.statusCode).toBe(200);
     expect(JSON.parse(res.body)).toEqual({ customer });
+
+    await Dynamo.delete(customer.ID, customersTable);
   });
 });
